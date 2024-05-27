@@ -1,0 +1,160 @@
+public class BeetleStudy4 {
+    
+    
+    
+    public static void main(String[] args) {
+        //2 boyutlu array kullanarak bir matrix yarattık 8'e 8 büyüklüğünde.
+        int[][] grid = new int[8][8];
+        //printGrid metodunun içinde grid'i yazdırarak matrixin gözükmesini sağladık.
+        printGrid(grid);
+        System.out.println("");
+        
+        //i ve j değerleri için 0'dan 7'ye kadar rastgele değerler aldırdık.
+        int i = (int) (Math.random() * 8);
+        int j = (int) (Math.random() * 8);
+
+        int numberOfAllMoves = 0;
+        int numberOfRightMoves = 0;
+        int numberOfLeftMoves = 0;
+        int numberOfUpwardMoves = 0;
+        int numberOfDownwardMoves = 0;
+        int numberOfReachingTheBorder = 0;
+        
+        //Böcek tüm noktalara basana kadar bu while döngüsü devam eder.
+        //Böcek her noktaya en az 1 kere bastığı zaman ise while döngüsü durur.
+        while (checkGrid(grid) == false) {
+            //Böcek i,j noktasına basar.
+            stepOnGrid(grid, i, j);
+            //Böcek bir adım attığı zaman toplam adım sayısını 1 arttırır.
+            numberOfAllMoves++;
+            //Grid'i yazdırmak için.
+            printGrid(grid);
+            System.out.println();   
+            
+            //Böceğin gideceği yön için k değerleri üzerinden 0'dan 7'ye kadar rastgele değer alır.
+            int k = (int) (Math.random() * 8);
+            //Eğer k , 0'a eşit ise böcek sağa gider.
+            if (k == 0) {
+                i++;
+                //Böcek matrix'in içinde kalmışsa eğer sağa doğru gitmiştir.
+                if (i <= 7) {
+                    numberOfRightMoves++;
+                }
+            //Eğer k, 1'e eşitse böcek sağ aşşağı doğru gider.
+            } else if (k == 1) {
+                i++;
+                j++;
+                //Böcek matrix'in içinde kalmışsa eğer sağa aşşağıya doğru gitmiştir.
+                if (i <= 7 && j <= 7) {
+                    numberOfRightMoves++;               
+                    numberOfDownwardMoves++;
+                }
+            //Eğer k, 2'ye eşitse böcek aşşağı doğru gider.
+            } else if (k == 2) {
+                j++;
+                //Böcek matrix'in içinde kalmışsa eğer aşşağıya doğru gitmiştir.
+                if (j <= 7) {
+                    numberOfDownwardMoves++;
+                }
+             //Eğer k, 3'e eşitse böcek sol aşşağıya doğru gider.
+            } else if (k == 3) {
+                i--;
+                j++;
+                //Böcek matrix'in içinde kalmışsa eğer sol aşşağıya doğru gitmiştir.
+                if (i >= 0 && j <= 7) {
+                    numberOfLeftMoves++;                
+                    numberOfDownwardMoves++;
+                }
+            //Eğer k, 4'e eşitse böcek sola doğru gider.
+            } else if (k == 4) {
+                i--;
+                //Böcek matrix'in içinde kalmışsa eğer sola doğru gitmiştir.
+                if (i >= 0) {
+                    numberOfLeftMoves++;
+                }
+            //Eğer k, 5'e eşitse böcek sol yukarı doğru gider.
+            } else if (k == 5) {
+                i--;
+                j--;
+                //Böcek matrix'in içinde kalmışsa eğer sol yukarıya doğru gitmiştir.
+                if (i >= 0 && j >= 0) {
+                    numberOfLeftMoves++;               
+                    numberOfUpwardMoves++;
+                }
+            //Eğer k, 6'e eşitse böcek yukarı doğru gider.
+            } else if (k == 6) {
+                j--;
+                //Böcek matrix'in içinde kalmışsa eğer yukarıya doğru gitmiştir.
+                if (j >= 0) {
+                    numberOfUpwardMoves++;
+                }
+            //Eğer k, 7'e eşitse böcek sağ yukarı doğru gider.
+            } else if (k == 7) {
+                i++;
+                j--;
+                //Böcek matrix'in içinde kalmışsa eğer sağ yukarıya doğru gitmiştir.
+                if (i <= 7 && j >= 0) {
+                    numberOfRightMoves++;               
+                    numberOfUpwardMoves++;
+                }
+            }
+            //Böcek matrixin sınır noktasına geldiğinde 1 arttır.
+            if(i < 0 || j < 0 || i > 7 || j > 7) {
+                numberOfReachingTheBorder++;
+            }
+            
+            //Matrixin solundan çıkmışsa böceği geri getir.
+            if (i < 0) {
+                i = 0;               
+            }
+            //Matrixin ykarısından çıkmışsa böceği geri getir.
+            if (j < 0) {
+                j = 0;                
+            }
+            //Matrixin sağından çıkmışsa böceği geri getir.
+            if (i > 7) {
+                i = 7;               
+            }
+            //Matrixin aşşağısından çıkmışsa böceği geri getir.
+            if (j > 7) {
+                j = 7;               
+            }
+        }
+
+        System.out.println("The probability of moving left= " + (int) ((double) numberOfLeftMoves / numberOfAllMoves * 100) + "%");
+        System.out.println("The probability of moving right= " + (int) ((double) numberOfRightMoves / numberOfAllMoves * 100) + "%");
+        System.out.println("The probability of moving up= " + (int) ((double) numberOfUpwardMoves / numberOfAllMoves * 100) + "%");
+        System.out.println("The probability of moving down= " + (int) ((double) numberOfDownwardMoves / numberOfAllMoves * 100) + "%");
+        System.out.println("The probability of reaching the border= " + (int) ((double) numberOfReachingTheBorder / numberOfAllMoves * 100) + "%");
+    }
+    
+    //Böceğin ilerlediği noktaları yarattığımız matrix içinde gösteriyor.
+    //i'deki artış sağa götürüyor , j'deki artış ise aşşağıya doğru götürüyor.   
+    public static void printGrid(int[][] grid) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                System.out.print(grid[i][j] + "\t");
+            }
+            System.out.println("");
+        }
+    }
+    
+    //Bu metod böceğin tüm noktalara basıp basmadığını kontrol eder.
+    //Eğer tüm noktalara basmışsa true return edilir.
+    public static boolean checkGrid(int[][] grid) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                if (grid[i][j] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+   
+    //Bu metod böceğin i,j noktasındaki adım sayısını 1 arttırır.
+    public static void stepOnGrid(int[][] grid, int i, int j) {
+        grid[i][j] += 1;
+    }
+
+}
